@@ -1,0 +1,122 @@
+=================
+dodawanie:
+=================
+fun insert(data):
+    create newNode
+    newNode->data = data
+    newNode->parent = nullptr
+    newNode->left = nullptr
+    newNode->right = nullptr
+
+    if root = nullptr, then:
+        root <- newNode
+
+    else:
+        current <- root
+
+        while current =/= nullptr, do:
+
+	        if data > current.data, then:
+	            if current->right = nullptr, then:
+	     	    current->right <- newNode
+		        newNode->parent <- current
+		        break;
+	        current = current->right
+
+	        else:
+	            if current->left = nullptr, then:
+		        current->left <- newNode
+		        newNode->parent <- current
+		        break;
+	        current = current->left
+
+=================
+szukanie:
+=================
+fun search(data):
+    if root = nullptr, then:
+	    return nullptr
+    current <- root
+    while current =/= nullptr and current->data =/= data, do:
+	    if data > current->data, then:
+	        current = current->right
+	    else:
+	        current = current->left
+   return current
+
+=================
+usuwanie:
+=================
+fun remove(data):
+    found <- search(data)
+    if found = nullptr, then:  // W drzewie nie ma podanej wartosci
+	    return
+
+    else if found->left = nullptr and found->right = nullptr, then:  // Węzeł jest liściem, przypadek 1
+	    if found = found->parent->left, then:
+	    found->parent->left <-nullptr
+	    else:
+	        found->parent->right <- nullptr
+	        found->parent = nullptr
+	        delete found
+
+    else if found->left =/= nullptr XOR found->right =/= nullptr, then:  //Węzeł ma jedno dziecko, przypadek 2
+        if found->left =/= nullptr, then:
+            subTree <- found->left
+        else:
+            subTree <- found->right
+        if found = root, then:
+            root <- subTree
+        else:
+            subTree->parent <- found->parent
+            if found->parent->left = parent, then:
+                found->parent->left <- subTree
+            else:
+                found->parent->right <- subTree
+        delete found
+
+    else if found->left =/= nullptr and found->right =/= nullptr, then:  // Węzeł ma dwójkę dzieci, przypadek 3
+        subTreeLeft <- found->left
+        subTreeRight <- found->right
+
+        successor <- found->right
+        while successor->left =/= nullptr, do:
+            successor <- successor->left
+
+        if successor->right =/= nullptr, then:
+            successor->parent->left <- successor->right
+        else:
+            successor->parent->left = nullptr
+
+        if found =/= root, then:
+            found->parent <- successor->parent
+        else:
+            successor->parent = nullptr
+            root = successor
+
+        if found->parent->left = found, then:
+            found->parent->left = successor
+        else:
+            found->parent->right = successor
+
+        successor->left <- subTreeLeft
+        successor->right <- subTreeRight
+        delete found
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
