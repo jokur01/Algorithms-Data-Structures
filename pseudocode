@@ -57,7 +57,6 @@ fun remove(data):
 	    found->parent->left <-nullptr
 	    else:
 	        found->parent->right <- nullptr
-	        found->parent = nullptr
 	        delete found
 
     else if found->left =/= nullptr XOR found->right =/= nullptr, then:  //Węzeł ma jedno dziecko, przypadek 2
