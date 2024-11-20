@@ -10,32 +10,34 @@ fun insert(data):
 
     if root = nullptr, then:
         root <- newNode
+        return
 
+    current <- root
+    parent <- nullptr
+
+    while current =/= nullptr, do:
+        parent <- current
+        if data > current->data, then:
+            current = current->right
+
+        else if data < current->data, then:
+            current = current->left
+
+        else:
+            delete newNode
+            return
+
+    if data > parent->data, then:
+        parent->right <- newNode
     else:
-        current <- root
+        parent->left <- newNode
+    newNode->parent <- parent
 
-        while current =/= nullptr, do:
-
-	        if data > current.data, then:
-	            if current->right = nullptr, then:
-	     	    current->right <- newNode
-		        newNode->parent <- current
-		        break;
-	        current = current->right
-
-	        else:
-	            if current->left = nullptr, then:
-		        current->left <- newNode
-		        newNode->parent <- current
-		        break;
-	        current = current->left
 
 =================
 szukanie:
 =================
 fun search(data):
-    if root = nullptr, then:
-	    return nullptr
     current <- root
     while current =/= nullptr and current->data =/= data, do:
 	    if data > current->data, then:
@@ -52,14 +54,14 @@ fun remove(data):
     if found = nullptr, then:  // W drzewie nie ma podanej wartosci
 	    return
 
-    else if found->left = nullptr and found->right = nullptr, then:  // Węzeł jest liściem, przypadek 1
+    if found->left = nullptr and found->right = nullptr, then:  // Case 1: Node is leaf
 	    if found = found->parent->left, then:
-	    found->parent->left <-nullptr
+	        found->parent->left <- nullptr
 	    else:
 	        found->parent->right <- nullptr
 	        delete found
 
-    else if found->left =/= nullptr XOR found->right =/= nullptr, then:  //Węzeł ma jedno dziecko, przypadek 2
+    else if found->left =/= nullptr XOR found->right =/= nullptr, then:  // Case 2: Node has only one child
         if found->left =/= nullptr, then:
             subTree <- found->left
         else:
@@ -68,19 +70,34 @@ fun remove(data):
             root <- subTree
         else:
             subTree->parent <- found->parent
-            if found->parent->left = parent, then:
+            if found->parent->left = found, then:
                 found->parent->left <- subTree
             else:
                 found->parent->right <- subTree
         delete found
 
-    else if found->left =/= nullptr and found->right =/= nullptr, then:  // Węzeł ma dwójkę dzieci, przypadek 3
+    else if found->left =/= nullptr and found->right =/= nullptr, then:  // Case 3: Node has 2 children
         subTreeLeft <- found->left
         subTreeRight <- found->right
 
         successor <- found->right
         while successor->left =/= nullptr, do:
             successor <- successor->left
+
+        if successor = subTreeRight, then:
+            subTreeLeft->parent <- successor
+            if found =/= root, then:
+                 if found = found->parent->left, then:
+                      found->parent->left <- successor
+
+                 else:
+                      found->parent->right <- successor
+                 successor->parent = found->parent
+
+            else:
+                 successor->parent <- nullptr
+            successor->left <- subTreeLeft
+            return
 
         if successor->right =/= nullptr, then:
             successor->parent->left <- successor->right
@@ -94,14 +111,13 @@ fun remove(data):
             root = successor
 
         if found->parent->left = found, then:
-            found->parent->left = successor
+            found->parent->left <- successor
         else:
-            found->parent->right = successor
+            found->parent->right <- successor
 
         successor->left <- subTreeLeft
         successor->right <- subTreeRight
         delete found
-
 
 
 
