@@ -168,6 +168,15 @@ public:
         }
 
     }
+
+    int tree_height(Node *node) {
+        if (node == nullptr) {
+            return 0;
+        }
+        int leftHeight = tree_height(node->left);
+        int rightHeight = tree_height(node->right);
+        return 1 + max(leftHeight, rightHeight);
+    }
 };
 
 
@@ -214,10 +223,10 @@ int main() {
     BinarySearchTree bst{};
     bst.root = n1;
 
+    cout<< bst.tree_height(n1) << endl;
+
     bst.remove(15);
     cout << bst.root->right->left->right->data << endl;
-
-
 
     return 0;
 }
